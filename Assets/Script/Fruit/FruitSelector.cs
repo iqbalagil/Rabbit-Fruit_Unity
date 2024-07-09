@@ -1,42 +1,61 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
-public class FruitSelector : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
+public class FruitSelector : MonoBehaviour
 {
-    [SerializeField] Canvas canvas;
-    private RectTransform rectTransform;
-    private CanvasGroup canvasGroup;
+    [SerializeField] SpriteRenderer _renderer;
+    private bool _dragging, _placed;
+    private Vector2 offset, _originalPosition;
+    private FruitHandler _slot;
+    private GameObject _piece;
 
-     void Awake()
+    public void Init(FruitHandler slot)
     {
-        rectTransform = GetComponent<RectTransform>();
-        canvasGroup = GetComponent<CanvasGroup>();
+        _renderer.sprite = slot.Renderer.sprite;
+        _slot = slot;
     }
 
-    public void OnBeginDrag(PointerEventData eventData)
+    private void Awake()
     {
-        Debug.Log("OnBeginDrag");
-        canvasGroup.alpha = .6f;
-        canvasGroup.blocksRaycasts = false;
+        _originalPosition = transform.position;
     }
 
-    public void OnDrag(PointerEventData eventData)
+    private void Update()
     {
-        Debug.Log("OnDrag");
-        rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;  
+        if (_placed) return;
+
+        if (!_dragging) return;
+
+        var mousePosition = GetMousePos();
+
+        transform.position = mousePosition - offset;
+
     }
 
-    public void OnEndDrag(PointerEventData eventData)
+    private void OnMouseDown()
     {
-        Debug.Log("OnEndDrag");
-        canvasGroup.alpha = 1f;
-        canvasGroup.blocksRaycasts = true;
+        _dragging = true;
+
+        offset = GetMousePos() - (Vector2)transform.position;
     }
 
-    public void OnPointerDown(PointerEventData eventData)
+    private void OnMouseUp()
     {
-        Debug.Log("OnPointerDown");
+        if(Vector2.Distance(transform.position, _slot.transform.position) < 3){
+            transform.position = -_slot.transform.position;
+            _placed = true;
+        } else
+            {
+            transform.position = _originalPosition;
+            _dragging = false;
+        }
+         
+        
+    }
+
+    Vector2 GetMousePos()
+    {
+        return Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
 }
