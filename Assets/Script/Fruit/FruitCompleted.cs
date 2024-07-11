@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-
 public class FruitCompleted : MonoBehaviour
 {
     [SerializeField] private List<FruitHandler> _slotPrefabs;
     [SerializeField] private List<FruitSelector> _slotPiece;
-    [SerializeField] private FruitSelector _fruitPiece;
     [SerializeField] private Transform _slotParent, _pieceParent;
 
     void Start()
@@ -16,14 +14,20 @@ public class FruitCompleted : MonoBehaviour
         Spawn();
     }
 
-    void Spawn() {
-        var randomSpawn = _slotPrefabs.OrderBy(s => Random.value).Take(3).ToList(); 
+    void Spawn()
+    {
+        var indices = Enumerable.Range(0, _slotPrefabs.Count).OrderBy(i => Random.value).ToList();
 
-        for (int i = 0; i < randomSpawn.Count; i++)
+        var selectedIndices = indices.Take(3).ToList();
+
+        for (int i = 0; i < selectedIndices.Count; i++)
         {
-            var spawnSlot = Instantiate(randomSpawn[i], _slotParent.GetChild(i).position, Quaternion.identity);
+            int index = selectedIndices[i];
 
-            var spawnPiece = Instantiate(_fruitPiece, _pieceParent.GetChild(i).position, Quaternion.identity);
+            var spawnSlot = Instantiate(_slotPrefabs[index], _slotParent.GetChild(i).position, Quaternion.identity, _slotParent.GetChild(i));
+
+            var spawnPiece = Instantiate(_slotPiece[index], _pieceParent.GetChild(i).position, Quaternion.identity, _pieceParent.GetChild(i));
+
             spawnPiece.Init(spawnSlot);
         }
     }
