@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - fruit
+  - AnimatePlayer
+  - AnimateFruit
   layers:
   - Default
   - TransparentFX

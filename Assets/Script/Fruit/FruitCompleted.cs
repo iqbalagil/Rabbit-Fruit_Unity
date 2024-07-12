@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class FruitCompleted : MonoBehaviour
 {
+
     [SerializeField] private List<FruitHandler> _slotPrefabs;
     [SerializeField] private List<FruitSelector> _slotPiece;
     [SerializeField] private Transform _slotParent, _pieceParent;
@@ -31,4 +32,8 @@ public class FruitCompleted : MonoBehaviour
             spawnPiece.Init(spawnSlot);
         }
     }
+
+    
+
+    
 }

@@ -8,6 +8,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 649680821010578739, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 649680821010578739, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
+      propertyPath: fruitAnimation
+      value: 
+      objectReference: {fileID: 6531122044037568926, guid: f43b8823a255e47ddb3888c52400d075, type: 3}
     - target: {fileID: 3998402550328860898, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -93,6 +101,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6123697907407806851, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
+      propertyPath: anim
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6123697907407806851, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
       propertyPath: _renderer
       value: 
       objectReference: {fileID: 7408923562790602579}
@@ -120,13 +132,47 @@ PrefabInstance:
       propertyPath: m_Name
       value: Fruit 2
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 8867217535169525793, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
+      propertyPath: m_TagString
+      value: fruit
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 649680821010578739, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8867217535169525793, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5426322065145905589}
   m_SourcePrefab: {fileID: 100100000, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
 --- !u!212 &7408923562790602579 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 7555623808223102771, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
   m_PrefabInstance: {fileID: 1011972272513646688}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8432304437587638337 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8867217535169525793, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
+  m_PrefabInstance: {fileID: 1011972272513646688}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &5426322065145905589
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8432304437587638337}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5a80359e98f0542079121c1d28c083fe, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
