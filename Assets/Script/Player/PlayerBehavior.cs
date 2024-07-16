@@ -19,7 +19,6 @@ public class PlayerBehavior : MonoBehaviour
     {
         anime = GetComponent<Animator>();
         _selector = selector.GetComponent<FruitSelector>();
-        _selector._placed = selector.GetComponent<FruitSelector>();
     }
 
     private void Start()
@@ -52,13 +51,13 @@ public class PlayerBehavior : MonoBehaviour
                     
                 }
 
-                if ( !_dropFruit)
-                {
-                    if (gameObject.CompareTag("Player")) 
-                    {
-                        anime.SetBool(PlayerSadAnimation, true);
-                    }
-                }
+                // if ( !_dropFruit)
+                // {
+                //     if (gameObject.CompareTag("Player")) 
+                //     {
+                //         anime.SetBool(PlayerSadAnimation, true);
+                //     }
+                // }
                 
             }
     }

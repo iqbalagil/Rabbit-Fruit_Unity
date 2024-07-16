@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,14 +6,19 @@ using UnityEngine;
 public class FruitSelector : MonoBehaviour
 {
     [SerializeField] public SpriteRenderer _renderer;
-    public bool _dragging,_placed;
+    public bool _dragging,_placed,animateTriggered;
     private Vector2 offset, _originalPosition;
     private FruitHandler _slot;
     private PlayerBehavior player;
     public Animator anim;
 
-    private static readonly int IsPlaced = Animator.StringToHash("ElevationAnimation");
-    
+    private FruitCompleted _fruitCompleted;
+    private static int nextSlotIndex = 0;
+    public Transform fruit;
+
+    private static readonly int IsPlaced = Animator.StringToHash("Placed");
+    private float _originalScale;
+    public Vector3 _originalParentPosition;
 
     private static int placedFruitsCount = 0;
     [SerializeField] private PlayerBehavior playerBehavior;
@@ -26,22 +32,35 @@ public class FruitSelector : MonoBehaviour
     private void Awake()
     {
         _originalPosition = transform.position;
+        if (transform.parent != null)
+        {
+            _originalParentPosition = transform.parent.position;
+        }
         player = FindObjectOfType<PlayerBehavior>();
         anim = GetComponent<Animator>();
+        _fruitCompleted = FindObjectOfType<FruitCompleted>();
     }
 
     private void Start()
     {
-        anim.SetBool(IsPlaced,false);
+        placedFruitsCount++;
+        _fruitCompleted = FindObjectOfType<FruitCompleted>();
     }
     private void Update()
     {
         if (_placed) return;
 
+        anim.enabled = false;
+        
         if (!_dragging) return;
 
         var mousePosition = GetMousePos();
         transform.position = mousePosition - offset;
+
+        if (animateTriggered == true)
+        {
+            transform.localScale = new Vector3(10f, 10f, 0f);
+        }
 
     }
 
@@ -53,29 +72,36 @@ public class FruitSelector : MonoBehaviour
         offset = GetMousePos() - (Vector2)transform.position;
     }
 
-    public void OnMouseUp()
+    private void OnMouseUp()
     {
         _dragging = false;
 
-        if (Vector2.Distance(transform.position, _slot.transform.position) < 3)
+        if (Vector2.Distance(transform.position, _slot.transform.position) < 10f)
         {
             transform.position = _slot.transform.position;
             _placed = true;
             StartCoroutine(DisappearAfterSnap());
-            if (placedFruitsCount % 3 == 0 && placedFruitsCount != 0)
+            placedFruitsCount++; 
+
+            if (placedFruitsCount % 3 == 0)
             {
-                PlayerBehavior.FindObjectOfType<PlayerBehavior>().anime.SetFloat("IsPlaced", 1);
-                PlayerBehavior.FindObjectOfType<PlayerBehavior>().OnDrop();
+                transform.parent.position = _originalPosition;
+                _fruitCompleted.ResetGamePrepareNextStage(); 
             }
 
-            if (placedFruitsCount == 9)
+            FindObjectOfType<FruitCompleted>().onFruitPlaced();
+
+            if (transform.parent != null)
             {
-                playerBehavior.anime.SetBool("IsJump",true);
+                // transform.parent.position = _slot.transform.position;
             }
         }
         else
         {
-            transform.position = _originalPosition;
+            if (!_placed)
+            {
+                transform.position = _originalPosition;
+            }
         }
     }
 
@@ -103,16 +129,17 @@ public class FruitSelector : MonoBehaviour
         {
             player.OnDrop();
 
-            if (gameObject.CompareTag("fruit")) 
+            if (gameObject.CompareTag("fruit"))
             {
+                anim.enabled = true;
                 Debug.Log("fruit fly");
                 _renderer.enabled = true;
-                if ( _slot.gameObject.activeSelf == false)
+                if (_placed)
                 {
+                    transform.position = _slot.transform.position;
                     OnElevation();
                 }
             }
-            _placed = false;
         }
 
     }
@@ -122,8 +149,39 @@ public class FruitSelector : MonoBehaviour
         return Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
     
+    
     private void OnElevation()
     {
+        // animateTriggered = true;
+        anim.transform.position = new Vector3(transform.position.x / 9f, transform.position.y / 9f, 0f);
         anim.SetBool(IsPlaced,true);
+        StartCoroutine(ChangeScaleAfterAnimation(0));
+    }
+
+    private IEnumerator ChangeScaleAfterAnimation(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        transform.localScale = new Vector3(25f, 25f, 0f);
+    }
+
+    private IEnumerator PlacedAfterAnimation(float delay, int slotIndex)
+    {
+        yield return new WaitForSeconds(delay);
+        if (fruit.transform.childCount > slotIndex)
+        {
+            Transform slot = fruit.GetChild(slotIndex);
+            transform.position = slot.position;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("basket"))
+        {
+            Debug.Log("Fruit is placed");
+            StartCoroutine(PlacedAfterAnimation(0, nextSlotIndex));
+            anim.enabled = false;
+            nextSlotIndex = (nextSlotIndex + 1) % fruit.transform.childCount;
+        }
     }
 }
