@@ -4,6 +4,7 @@ using UnityEngine;
 public class FruitSelector : MonoBehaviour
 {
     [SerializeField] public new SpriteRenderer renderer;
+    private ChangePosition _changePosition;
     public bool dragging,placed,animateTriggered;
     private Vector2 _offset, _originalPosition;
     private Vector3 _originalParentPosition;
@@ -22,7 +23,6 @@ public class FruitSelector : MonoBehaviour
     private static int _placedFruitsCount = 0;
     [SerializeField] private PlayerBehavior playerBehavior;
 
-    public float delayAnimation;
 
 
     public void Init(FruitHandler slot)
@@ -37,6 +37,7 @@ public class FruitSelector : MonoBehaviour
         _player = FindObjectOfType<PlayerBehavior>();
         anim = GetComponent<Animator>();
         _fruitCompleted = FindObjectOfType<FruitCompleted>();
+        _changePosition = GetComponent<ChangePosition>();
         _originalParentPosition = transform.parent.position;
     }
 
@@ -77,7 +78,10 @@ public class FruitSelector : MonoBehaviour
 
         if (Vector2.Distance(transform.position, _slot.transform.position) < 10f)
         {
-            transform.position = _slot.transform.position;
+            var fruitBody = gameObject.AddComponent<Rigidbody2D>();
+            fruitBody.gravityScale = 0;
+          
+          transform.position = _slot.transform.position;
             placed = true;
             StartCoroutine(DisappearAfterSnap());
             _placedFruitsCount++; 
@@ -85,8 +89,6 @@ public class FruitSelector : MonoBehaviour
             if (transform.parent != null)
             {
                 transform.parent.position = _slot.transform.position;
-                animateTriggered = true;
-                StartCoroutine(DelayAfterPlaced());
             }
             
             if (_placedFruitsCount % 3 == 0)
@@ -112,7 +114,7 @@ public class FruitSelector : MonoBehaviour
 
         if (renderer != null)
         {
-            renderer.enabled = false;
+            renderer.enabled = true;
         } else
         {
             Debug.Log("Sprite is DissapearAfterSnap");
@@ -169,8 +171,18 @@ public class FruitSelector : MonoBehaviour
         yield return new WaitForSeconds(delay);
         if (fruit.transform.childCount > slotIndex)
         {
-            Transform slot = fruit.GetChild(slotIndex);
-            transform.position = slot.position;
+            GameObject locGameObject = GameObject.Find($"Player/Basket/rabBasket/Loc {slotIndex + 1}");
+        
+            if (locGameObject != null)
+            {
+                transform.position = locGameObject.transform.position;
+                transform.SetParent(locGameObject.transform);
+                transform.localPosition = Vector3.zero;
+            }
+            else
+            {
+                Debug.LogError($"Loc GameObject with name Loc {slotIndex + 1} not found under Player/Basket");
+            }
         }
     }
 
@@ -179,22 +191,27 @@ public class FruitSelector : MonoBehaviour
         if (other.CompareTag("basket"))
         {
             Debug.Log("Fruit is placed");
+            animateTriggered = true;
             StartCoroutine(PlacedAfterAnimation(0, _nextSlotIndex));
             anim.enabled = false;
-            _nextSlotIndex = (_nextSlotIndex + 1) % fruit.transform.childCount;
-        }
-    }
-
-    private IEnumerator DelayAfterPlaced()
-    {
-        yield return new WaitForSeconds(delayAnimation);
-        if (animateTriggered)
-        {
-            if ((transform.parent.position - _originalParentPosition).magnitude > 0.1f)
+        
+            _nextSlotIndex = (_nextSlotIndex + 1) % 3;
+            
+            string locPath = $"Player/Basket/rabBasket/Loc {_nextSlotIndex + 1}";
+            
+            Transform playerBasketLoc = GameObject.Find(locPath).transform;
+        
+            if (playerBasketLoc != null)
             {
-                Debug.Log("Change position back to original");
-                transform.parent.position = _originalParentPosition;
+                transform.SetParent(playerBasketLoc);
+                transform.localPosition = Vector3.zero;
+            }
+            else
+            {
+                Debug.LogError($"Loc {_nextSlotIndex + 1} not found under Player/Basket");
             }
         }
     }
+
+
 }
