@@ -6,12 +6,7 @@ Welcome to the Rabbit Fruit Gameplay project! This Unity project is developed by
 
 - [Introduction](#introduction)
 - [Features](#features)
-- [Project Structure](#project-structure)
-- [Setup](#setup)
-- [Usage](#usage)
-- [Scripts](#scripts)
-- [Contributing](#contributing)
-- [License](#license)
+
 
 ## Introduction
 
@@ -23,8 +18,3 @@ Rabbit Fruit Gameplay is a Unity-based game where players control a rabbit to in
 - **Prefab and Variant System**: Efficient management of fruit objects using Unity prefabs and variants.
 - **Animation Management**: Centralized control of animations via AnimationManager and Animator components.
 - **Smooth Integration**: Well-structured scripts to handle player interactions and animations seamlessly.
-
-## Project Structure
-
-The project is structured as follows:
-
