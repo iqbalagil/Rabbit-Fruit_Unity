@@ -40,7 +40,7 @@ public class PlayerBehavior : MonoBehaviour
             {
                 _dropFruit = false;
             }
-            if (_selector._placed == true)
+            if (_selector.placed == true)
             {
                 if ( _dropFruit)
                 {

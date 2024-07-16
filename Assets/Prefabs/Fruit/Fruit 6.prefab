@@ -133,6 +133,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7408923562790602579}
     - target: {fileID: 6123697907407806851, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
+      propertyPath: delayAnimation
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6123697907407806851, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
       propertyPath: animateTriggered
       value: 0
       objectReference: {fileID: 0}

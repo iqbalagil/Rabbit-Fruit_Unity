@@ -46,9 +46,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 095c4a9111df24b468ea602212d37e9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _renderer: {fileID: 7555623808223102771}
-  _dragging: 0
-  _placed: 0
+  renderer: {fileID: 7408923562790602579, guid: bac66118107e7467891175eb69a93bc1, type: 3}
+  dragging: 0
+  placed: 0
+  animateTriggered: 0
+  anim: {fileID: 0}
+  fruit: {fileID: 0}
+  originalParentPosition: {x: 0, y: 0, z: 0}
+  playerBehavior: {fileID: 0}
 --- !u!61 &3998402550328860898
 BoxCollider2D:
   m_ObjectHideFlags: 0

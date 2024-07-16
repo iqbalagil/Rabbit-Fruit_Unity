@@ -1,27 +1,28 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FruitSelector : MonoBehaviour
 {
-    [SerializeField] public SpriteRenderer _renderer;
-    public bool _dragging,_placed,animateTriggered;
-    private Vector2 offset, _originalPosition;
+    [SerializeField] public new SpriteRenderer renderer;
+    public bool dragging,placed,animateTriggered;
+    private Vector2 _offset, _originalPosition;
+    private Vector3 _originalParentPosition;
     private FruitHandler _slot;
-    private PlayerBehavior player;
+    private PlayerBehavior _player;
     public Animator anim;
 
     private FruitCompleted _fruitCompleted;
-    private static int nextSlotIndex = 0;
+    private static int _nextSlotIndex = 0;
     public Transform fruit;
 
     private static readonly int IsPlaced = Animator.StringToHash("Placed");
     private float _originalScale;
-    public Vector3 _originalParentPosition;
+    public Vector3 originalParentPosition;
 
-    private static int placedFruitsCount = 0;
+    private static int _placedFruitsCount = 0;
     [SerializeField] private PlayerBehavior playerBehavior;
+
+    public float delayAnimation;
 
 
     public void Init(FruitHandler slot)
@@ -32,30 +33,28 @@ public class FruitSelector : MonoBehaviour
     private void Awake()
     {
         _originalPosition = transform.position;
-        if (transform.parent != null)
-        {
-            _originalParentPosition = transform.parent.position;
-        }
-        player = FindObjectOfType<PlayerBehavior>();
+        _slot = FindObjectOfType<FruitHandler>();
+        _player = FindObjectOfType<PlayerBehavior>();
         anim = GetComponent<Animator>();
         _fruitCompleted = FindObjectOfType<FruitCompleted>();
+        _originalParentPosition = transform.parent.position;
     }
 
     private void Start()
     {
-        placedFruitsCount++;
+        _placedFruitsCount++;
         _fruitCompleted = FindObjectOfType<FruitCompleted>();
     }
     private void Update()
     {
-        if (_placed) return;
+        if (placed) return;
 
         anim.enabled = false;
         
-        if (!_dragging) return;
+        if (!dragging) return;
 
         var mousePosition = GetMousePos();
-        transform.position = mousePosition - offset;
+        transform.position = mousePosition - _offset;
 
         if (animateTriggered == true)
         {
@@ -66,39 +65,41 @@ public class FruitSelector : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (_placed) return;
+        if (placed) return;
 
-        _dragging = true;
-        offset = GetMousePos() - (Vector2)transform.position;
+        dragging = true;
+        _offset = GetMousePos() - (Vector2)transform.position;
     }
 
     private void OnMouseUp()
     {
-        _dragging = false;
+        dragging = false;
 
         if (Vector2.Distance(transform.position, _slot.transform.position) < 10f)
         {
             transform.position = _slot.transform.position;
-            _placed = true;
+            placed = true;
             StartCoroutine(DisappearAfterSnap());
-            placedFruitsCount++; 
-
-            if (placedFruitsCount % 3 == 0)
-            {
-                transform.parent.position = _originalPosition;
-                _fruitCompleted.ResetGamePrepareNextStage(); 
-            }
-
-            FindObjectOfType<FruitCompleted>().onFruitPlaced();
-
+            _placedFruitsCount++; 
+            
             if (transform.parent != null)
             {
-                // transform.parent.position = _slot.transform.position;
+                transform.parent.position = _slot.transform.position;
+                animateTriggered = true;
+                StartCoroutine(DelayAfterPlaced());
             }
+            
+            if (_placedFruitsCount % 3 == 0)
+            {
+                StartCoroutine(_fruitCompleted.ResetGamePrepareNextStage());
+            }
+
+            FindObjectOfType<FruitCompleted>().OnFruitPlaced();
+
         }
         else
         {
-            if (!_placed)
+            if (!placed)
             {
                 transform.position = _originalPosition;
             }
@@ -109,9 +110,9 @@ public class FruitSelector : MonoBehaviour
     {
         yield return new WaitForSeconds(0f);
 
-        if (_renderer != null)
+        if (renderer != null)
         {
-            _renderer.enabled = false;
+            renderer.enabled = false;
         } else
         {
             Debug.Log("Sprite is DissapearAfterSnap");
@@ -125,16 +126,16 @@ public class FruitSelector : MonoBehaviour
             }
             _slot.gameObject.SetActive(false);
         }
-        if (player != null)
+        if (_player != null)
         {
-            player.OnDrop();
+            _player.OnDrop();
 
             if (gameObject.CompareTag("fruit"))
             {
                 anim.enabled = true;
                 Debug.Log("fruit fly");
-                _renderer.enabled = true;
-                if (_placed)
+                renderer.enabled = true;
+                if (placed)
                 {
                     transform.position = _slot.transform.position;
                     OnElevation();
@@ -152,7 +153,6 @@ public class FruitSelector : MonoBehaviour
     
     private void OnElevation()
     {
-        // animateTriggered = true;
         anim.transform.position = new Vector3(transform.position.x / 9f, transform.position.y / 9f, 0f);
         anim.SetBool(IsPlaced,true);
         StartCoroutine(ChangeScaleAfterAnimation(0));
@@ -179,9 +179,22 @@ public class FruitSelector : MonoBehaviour
         if (other.CompareTag("basket"))
         {
             Debug.Log("Fruit is placed");
-            StartCoroutine(PlacedAfterAnimation(0, nextSlotIndex));
+            StartCoroutine(PlacedAfterAnimation(0, _nextSlotIndex));
             anim.enabled = false;
-            nextSlotIndex = (nextSlotIndex + 1) % fruit.transform.childCount;
+            _nextSlotIndex = (_nextSlotIndex + 1) % fruit.transform.childCount;
+        }
+    }
+
+    private IEnumerator DelayAfterPlaced()
+    {
+        yield return new WaitForSeconds(delayAnimation);
+        if (animateTriggered)
+        {
+            if ((transform.parent.position - _originalParentPosition).magnitude > 0.1f)
+            {
+                Debug.Log("Change position back to original");
+                transform.parent.position = _originalParentPosition;
+            }
         }
     }
 }
