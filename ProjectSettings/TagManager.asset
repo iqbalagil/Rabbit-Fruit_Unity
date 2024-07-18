@@ -8,6 +8,7 @@ TagManager:
   - AnimatePlayer
   - AnimateFruit
   - basket
+  - cart
   layers:
   - Default
   - TransparentFX

@@ -1,64 +1,58 @@
 using System;
-using Unity.VisualScripting;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public class PlayerBehavior : MonoBehaviour
 {
-    [SerializeField] public Animator anime;
-
-    public GameObject selector;
+    public Animator anime;
     private FruitSelector _selector;
-    private bool _dropFruit;
     
-    
-    private static readonly int PlayerHappyAnimation = Animator.StringToHash("IsHappy");
-    private static readonly int PlayerSadAnimation = Animator.StringToHash("SadAnimation");
-    private static readonly int PlayerIdleAnimation = Animator.StringToHash("IsIdle");
+  public int playerHappyAnimation = Animator.StringToHash("IsHappy");
+  public int playerSadAnimation = Animator.StringToHash("SadAnimation");
+  public int playerIdleAnimation = Animator.StringToHash("IsSended");
+  public int playerTuangAnimation = Animator.StringToHash("IsTuang");
+  public int playerJumpAnimation = Animator.StringToHash("IsJumping");
     
     private void Awake()
     {
         anime = GetComponent<Animator>();
-        _selector = selector.GetComponent<FruitSelector>();
     }
 
     private void Start()
     {
-        anime.SetBool(PlayerIdleAnimation, false);
+        anime.SetBool(playerIdleAnimation, false);
+        StartCoroutine(InitializeSelector());
     }
-
-    public void OnDrop()
+    
+    private IEnumerator InitializeSelector()
     {
-        bool isHappy = anime.GetBool(PlayerHappyAnimation);
-        bool isSad = anime.GetBool(PlayerSadAnimation);
-
-            if (!isHappy && !isSad)
-            {
-                anime.SetBool(PlayerIdleAnimation, true);
-                _dropFruit = true;
-            }
-            else
-            {
-                _dropFruit = false;
-            }
-            if (_selector.placed == true)
-            {
-                if ( _dropFruit)
-                {
-                    if (gameObject.CompareTag("Player"))
-                    {
-                        anime.SetBool(PlayerHappyAnimation, true);
-                    }
-                    
-                }
-
-                // if ( !_dropFruit)
-                // {
-                //     if (gameObject.CompareTag("Player")) 
-                //     {
-                //         anime.SetBool(PlayerSadAnimation, true);
-                //     }
-                // }
-                
-            }
+        _selector = FindObjectOfType<FruitSelector>();
+        yield return new WaitForSeconds(0.1f);
     }
+
+    public IEnumerator PlayerTuangFruit()
+    {
+        yield return new WaitForSeconds(1f);
+        if ( _selector == null)
+        {
+            Debug.LogError("is null");
+        }
+        if (!_selector.isTuang)
+        {
+            anime.SetBool(playerTuangAnimation, false);
+        }
+        
+    }
+
+    public IEnumerator PlayerJumping()
+    {
+        yield return new WaitForSeconds(1f);
+        if (!_selector.isJumping)
+        {
+            anime.SetBool(playerJumpAnimation, false);
+        }
+    }
+    
 }

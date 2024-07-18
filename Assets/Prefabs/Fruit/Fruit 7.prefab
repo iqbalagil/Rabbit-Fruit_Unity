@@ -123,7 +123,7 @@ PrefabInstance:
     - target: {fileID: 6123697907407806851, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
       propertyPath: fruit
       value: 
-      objectReference: {fileID: 1152942327234504642, guid: 54df6c918e09e40a9aeca910c78300e0, type: 3}
+      objectReference: {fileID: 4881393861898346236, guid: bac66118107e7467891175eb69a93bc1, type: 3}
     - target: {fileID: 6123697907407806851, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
       propertyPath: _placed
       value: 0
@@ -158,6 +158,10 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: 3479e16bfeb034e008adda9122f2005a, type: 3}
     - target: {fileID: 7555623808223102771, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
       propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7555623808223102771, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
+      propertyPath: m_MaskInteraction
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7555623808223102771, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
