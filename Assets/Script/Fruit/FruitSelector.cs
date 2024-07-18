@@ -118,7 +118,6 @@ public class FruitSelector : MonoBehaviour
 
             if (_placedFruitsCount % 3 == 0)
             {
-                // _player.anime.SetBool(_player.playerTuangAnimation, true);
                 // StartCoroutine(_player.PlayerTuangFruit());
                 StartCoroutine(_fruitCompleted.ResetGamePrepareNextStage());
                 StartCoroutine(_changePosition.BackToPositionBefore());
