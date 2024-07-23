@@ -9,6 +9,7 @@ public class FruitSelector : MonoBehaviour
     private FruitHandler _slot;
     private PlayerBehavior _player;
     private FruitCompleted _fruitCompleted;
+    private FruitBasketAnimation _fruitBasketAnimation;
 
     public bool dragging, placed, animateTriggered, isHappy, isSad, isTuang, isCartPlaced, isElevate;
     private Vector2 _offset, _originalPosition;
@@ -36,6 +37,7 @@ public class FruitSelector : MonoBehaviour
         anim = GetComponent<Animator>();
         _fruitCompleted = FindObjectOfType<FruitCompleted>();
         _changePosition = FindObjectOfType<ChangePosition>();
+        _fruitBasketAnimation = GetComponent<FruitBasketAnimation>();
         _originalParentPosition = transform.parent.position;
     }
 
@@ -93,9 +95,12 @@ public class FruitSelector : MonoBehaviour
             {
                 isCartPlaced = true;
                 isElevate = false;
+                
+                _fruitBasketAnimation.AnimateSlot(_fruitBasketAnimation.slot1);
+                _fruitBasketAnimation.AnimateSlot(_fruitBasketAnimation.slot2);
+                _fruitBasketAnimation.AnimateSlot(_fruitBasketAnimation.slot3);
+                
                 StartCoroutine(_changePosition.BackToPositionBefore());
-                StartCoroutine(FruitTuang());
-                StartCoroutine(TuangAnimation());
                 StartCoroutine(_player.PlayerTuangFruit());
                 StartCoroutine(_fruitCompleted.ResetGamePrepareNextStage());
             }

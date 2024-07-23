@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ChangePosition : MonoBehaviour
 {
-    public GameObject slot1, slot2, slot3, loc1, loc2, loc3;
+    public GameObject slot1, slot2, slot3;
     private Vector3 _originalParentPosition1, _originalParentPosition2, _originalParentPosition3; 
     FruitSelector _selector;
     public float delayAnimation;
