@@ -133,6 +133,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7408923562790602579}
     - target: {fileID: 6123697907407806851, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
+      propertyPath: _filledSlots
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6123697907407806851, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
       propertyPath: delayAnimation
       value: 4
       objectReference: {fileID: 0}
@@ -140,6 +144,46 @@ PrefabInstance:
       propertyPath: animateTriggered
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6123697907407806851, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
+      propertyPath: slots.Array.size
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6123697907407806851, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
+      propertyPath: slots.Array.data[0]
+      value: 
+      objectReference: {fileID: 7774060747276196909, guid: 958a16c0f7ff541f680b133cd8358ad0, type: 3}
+    - target: {fileID: 6123697907407806851, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
+      propertyPath: slots.Array.data[1]
+      value: 
+      objectReference: {fileID: 7428144556814538443, guid: 8501d6257661749bdafc05a8a7db7919, type: 3}
+    - target: {fileID: 6123697907407806851, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
+      propertyPath: slots.Array.data[2]
+      value: 
+      objectReference: {fileID: 6085562449474441011, guid: d812d455314f3449594b97274b5e469e, type: 3}
+    - target: {fileID: 6123697907407806851, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
+      propertyPath: slots.Array.data[3]
+      value: 
+      objectReference: {fileID: 8631327270200888434, guid: dc9a020b1e204432b9d72f8fb38c6f6e, type: 3}
+    - target: {fileID: 6123697907407806851, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
+      propertyPath: slots.Array.data[4]
+      value: 
+      objectReference: {fileID: 1216853122928012510, guid: 3e4ae9532dc044626a446a2dd07263bc, type: 3}
+    - target: {fileID: 6123697907407806851, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
+      propertyPath: slots.Array.data[5]
+      value: 
+      objectReference: {fileID: 677284716981644165, guid: 5dfe5afbabf2f440d82ec61a21affe70, type: 3}
+    - target: {fileID: 6123697907407806851, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
+      propertyPath: slots.Array.data[6]
+      value: 
+      objectReference: {fileID: 4359191634215721312, guid: 8d0841a7b34ba48fd9281f7d5169dd6b, type: 3}
+    - target: {fileID: 6123697907407806851, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
+      propertyPath: slots.Array.data[7]
+      value: 
+      objectReference: {fileID: 6057447047214234479, guid: 8011748e657cc4faca0dff26bcc5905e, type: 3}
+    - target: {fileID: 6123697907407806851, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
+      propertyPath: slots.Array.data[8]
+      value: 
+      objectReference: {fileID: 7903593395489029266, guid: 5ec1ca25ac9294a67b2eeab6418aa22d, type: 3}
     - target: {fileID: 6123697907407806851, guid: 758ca0e8307fc4b058d05a6741861030, type: 3}
       propertyPath: fruitBasketGameObject
       value: 

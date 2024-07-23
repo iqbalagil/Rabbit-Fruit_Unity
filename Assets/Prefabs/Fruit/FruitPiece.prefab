@@ -50,10 +50,14 @@ MonoBehaviour:
   dragging: 0
   placed: 0
   animateTriggered: 0
+  isHappy: 0
+  isSad: 0
+  isTuang: 0
+  isCartPlaced: 0
+  isElevate: 0
   anim: {fileID: 0}
   fruit: {fileID: 0}
   originalParentPosition: {x: 0, y: 0, z: 0}
-  playerBehavior: {fileID: 0}
 --- !u!61 &3998402550328860898
 BoxCollider2D:
   m_ObjectHideFlags: 0

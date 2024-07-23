@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
@@ -5,19 +6,25 @@ using UnityEngine;
 
 public class CartHandler : MonoBehaviour
 {
+    public BoxCollider2D _bc2d;
     public GameObject[] slots;
-    private int filledSlots = 0;
-    private PlayerBehavior _playerBehavior;
+    public int _filledSlots = 0;
+    public PlayerBehavior _playerBehavior;
     public float delay;
-    
+
+    private void Awake()
+    {
+        _bc2d = GetComponent<BoxCollider2D>();
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("fruit") && filledSlots < slots.Length)
+        if (other.gameObject.CompareTag("fruit") && _filledSlots < slots.Length)
         {
-            PlaceFruitInSlot(other.gameObject, filledSlots);
-            filledSlots++;
+            PlaceFruitInSlot(other.gameObject, _filledSlots);
+            _filledSlots++;
 
-            if (filledSlots == slots.Length)
+            if (_filledSlots == slots.Length)
             {
                 JumpTriggered();
                 StartCoroutine(ResetAfterCompleted(delay));
@@ -25,7 +32,8 @@ public class CartHandler : MonoBehaviour
         }   
     }
 
-    void PlaceFruitInSlot(GameObject fruit, int slotIndex)
+    
+  public void PlaceFruitInSlot(GameObject fruit, int slotIndex)
     {
         fruit.transform.position = slots[slotIndex].transform.position;
         fruit.transform.parent = slots[slotIndex].transform;

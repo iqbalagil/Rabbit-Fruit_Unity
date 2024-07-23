@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3816219219983308119}
   - component: {fileID: 6008848397335113492}
-  - component: {fileID: 7188478999354089362}
   m_Layer: 0
   m_Name: SlotFruit
   m_TagString: Untagged
@@ -85,16 +84,3 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &7188478999354089362
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 630917108852854576}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04ec570b02a6a48358b049b16f3301af, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Renderer: {fileID: 6008848397335113492}

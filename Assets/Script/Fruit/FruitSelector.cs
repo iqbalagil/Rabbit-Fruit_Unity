@@ -6,10 +6,11 @@ public class FruitSelector : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer renderer;
     private ChangePosition _changePosition;
-    private FruitHandler _slot;
+    private SpriteRenderer _slot;
     private PlayerBehavior _player;
     private FruitCompleted _fruitCompleted;
     private FruitBasketAnimation _fruitBasketAnimation;
+    private CartManager _cartManager;
 
     public bool dragging, placed, animateTriggered, isHappy, isSad, isTuang, isCartPlaced, isElevate;
     private Vector2 _offset, _originalPosition;
@@ -18,13 +19,13 @@ public class FruitSelector : MonoBehaviour
     private static int _nextSlotIndex = 0;
     private static int _placedFruitsCount = 0;
     public Transform fruit;
-
+    private int indexSlot;
     public Vector3 originalParentPosition;
     
     private static readonly int IsPlaced = Animator.StringToHash("Placed");
     private static readonly int IsPlacedCart = Animator.StringToHash("PlacedCart");
 
-    public void Init(FruitHandler slot)
+    public void Init(SpriteRenderer slot)
     {
         _slot = slot;
     }
@@ -32,15 +33,16 @@ public class FruitSelector : MonoBehaviour
     private void Awake()
     {
         _originalPosition = transform.position;
-        _slot = FindObjectOfType<FruitHandler>();
         _player = FindObjectOfType<PlayerBehavior>();
         anim = GetComponent<Animator>();
         _fruitCompleted = FindObjectOfType<FruitCompleted>();
         _changePosition = FindObjectOfType<ChangePosition>();
-        _fruitBasketAnimation = GetComponent<FruitBasketAnimation>();
+        _fruitBasketAnimation = FindObjectOfType<FruitBasketAnimation>();
+        _cartManager = FindObjectOfType<CartManager>();
         _originalParentPosition = transform.parent.position;
-    }
 
+    }
+    
     private void Update()
     {
         if (placed) return;
@@ -54,6 +56,7 @@ public class FruitSelector : MonoBehaviour
         _player.anime.SetBool(_player.playerTuangAnimation, isTuang);
         _player.anime.SetBool(_player.playerSadAnimation, isSad && dragging);
         _player.anime.SetBool(_player.playerHappyAnimation, isHappy);
+
 
         if (animateTriggered)
         {
@@ -93,16 +96,13 @@ public class FruitSelector : MonoBehaviour
 
             if (_placedFruitsCount % 3 == 0)
             {
-                isCartPlaced = true;
-                isElevate = false;
-                
-                _fruitBasketAnimation.AnimateSlot(_fruitBasketAnimation.slot1);
-                _fruitBasketAnimation.AnimateSlot(_fruitBasketAnimation.slot2);
-                _fruitBasketAnimation.AnimateSlot(_fruitBasketAnimation.slot3);
-                
+                _cartManager.BackToPosition();
+                StartCoroutine(TuangAnimation());
+                StartCoroutine(TuangPlayerAnimation());
                 StartCoroutine(_changePosition.BackToPositionBefore());
                 StartCoroutine(_player.PlayerTuangFruit());
                 StartCoroutine(_fruitCompleted.ResetGamePrepareNextStage());
+
             }
 
             _fruitCompleted.OnFruitPlaced();
@@ -137,9 +137,9 @@ public class FruitSelector : MonoBehaviour
 
         if (_slot != null)
         {
-            if (_slot.Renderer != null)
+            if (_slot != null)
             {
-                _slot.Renderer.enabled = false;
+                _slot.enabled = false;
             }
             _slot.gameObject.SetActive(false);
         }
@@ -172,14 +172,12 @@ public class FruitSelector : MonoBehaviour
         yield return new WaitForSeconds(delay);
         transform.localScale = new Vector3(25f, 25f, 0f);
     }
-
-    private IEnumerator PlacedAfterAnimation(float delay, int slotIndex)
+    public void PlacedAfterAnimation2()
     {
-        yield return new WaitForSeconds(delay);
-        if (fruit.transform.childCount > slotIndex)
+        if (fruit.transform.childCount > indexSlot)
         {
-            GameObject locGameObject = GameObject.Find($"Player/Basket/rabBasket/Loc {slotIndex + 1}");
-
+            GameObject locGameObject = GameObject.Find($"Player/Basket/rabBasket/Loc {indexSlot + 1}");
+    
             if (locGameObject != null)
             {
                 transform.position = locGameObject.transform.position;
@@ -188,7 +186,7 @@ public class FruitSelector : MonoBehaviour
             }
             else
             {
-                Debug.LogError($"Loc GameObject with name Loc {slotIndex + 1} not found under Player/Basket");
+                Debug.LogError($"Loc GameObject with name Loc {indexSlot + 1} not found under Player/Basket");
             }
         }
     }
@@ -200,37 +198,37 @@ public class FruitSelector : MonoBehaviour
             _player.anime.SetBool(_player.playerHappyAnimation, false);
             animateTriggered = true;
             anim.enabled = false;
-
+    
             _nextSlotIndex = (_nextSlotIndex + 1) % 3;
-            StartCoroutine(PlacedAfterAnimation(0, _nextSlotIndex));
-
+            indexSlot = _nextSlotIndex;
+    
             string locPath = $"Player/Basket/rabBasket/Loc {_nextSlotIndex + 1}";
             Transform playerBasketLoc = GameObject.Find(locPath)?.transform;
-
+    
             if (playerBasketLoc != null)
             {
                 transform.SetParent(playerBasketLoc);
                 transform.localPosition = Vector3.zero;
-            }
-            else
-            {
-                Debug.LogError($"Loc {_nextSlotIndex} not found under Player/Basket. Check if it exists and is active.");
             }
         }
     }
 
     private IEnumerator TuangAnimation()
     {
-        yield return new WaitForSeconds(4f);
-        _player.anime.SetBool(_player.playerTuangAnimation, true);
+        yield return new WaitForSeconds(3.9f);
+        _fruitBasketAnimation.AnimateSlot(_fruitBasketAnimation.slot1);
+        _fruitBasketAnimation.AnimateSlot(_fruitBasketAnimation.slot2);
+        _fruitBasketAnimation.AnimateSlot(_fruitBasketAnimation.slot3);
+        _cartManager.BackToPosition();
     }
 
-    private IEnumerator FruitTuang()
+    private IEnumerator TuangPlayerAnimation()
     {
         yield return new WaitForSeconds(4f);
-        // anim.enabled = true;
-        // anim.SetTrigger(IsPlacedCart);
-        transform.parent.position += new Vector3(5f, 0, 0);
+        _player.anime.SetBool(_player.playerTuangAnimation, true);
+        yield return new WaitForSeconds(0.1f);
+        _player.anime.SetBool(_player.playerTuangAnimation, false);
+
     }
 
     private void TriggredListFruitObject()

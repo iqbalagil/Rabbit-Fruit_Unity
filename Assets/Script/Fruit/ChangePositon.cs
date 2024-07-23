@@ -8,6 +8,7 @@ public class ChangePosition : MonoBehaviour
     FruitSelector _selector;
     public float delayAnimation;
     
+    // Save default position for slotParent
     private void Start()
     {
 
@@ -16,7 +17,7 @@ public class ChangePosition : MonoBehaviour
         _originalParentPosition3 = slot3.transform.position;
     }
     
-
+ //Change position slotParent gameObject back to default
     public IEnumerator BackToPositionBefore()
     {
         yield return new WaitForSeconds(4f);

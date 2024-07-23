@@ -6,17 +6,11 @@ public class FruitBasketAnimation : MonoBehaviour
     public GameObject slot1, slot2, slot3;
 
     public float moveUpDuration = 1f;
+    public float moveY;
     public float dropDownDuration = 1f;
-    public float moveUpDistance = 2f;
+    public float moveX;
     public float dropDownDistance = 2f;
     public float rotateAngle = 120f;
-
-    private void Start()
-    {
-        slot1 = transform.GetChild(0).gameObject;
-        slot2 = transform.GetChild(1).gameObject;
-        slot3 = transform.GetChild(2).gameObject;
-    }
 
     public void AnimateSlot(GameObject slot)
     {
@@ -27,7 +21,7 @@ public class FruitBasketAnimation : MonoBehaviour
     {
         Vector3 originalPosition = slot.transform.position;
         Quaternion originalRotation = slot.transform.rotation;
-        Vector3 targetPosition = originalPosition + new Vector3(moveUpDistance, moveUpDistance, 0);
+        Vector3 targetPosition = originalPosition + new Vector3(moveX, moveY, 0);
         Quaternion targetRotation = originalRotation * Quaternion.Euler(0, 0, 10);
 
         float elapsedTime = 0;

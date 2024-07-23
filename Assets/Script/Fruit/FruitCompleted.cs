@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class FruitCompleted : MonoBehaviour
 {
-    [SerializeField] private List<FruitHandler> slotPrefabs;
+    [SerializeField] private List<GameObject> slotPrefabs;
     [SerializeField] private List<FruitSelector> slotPiece;
     [SerializeField] private Transform slotParent, pieceParent;
 
@@ -50,7 +50,8 @@ public class FruitCompleted : MonoBehaviour
                 }
             }
 
-            spawnPiece.Init(spawnSlot);
+            SpriteRenderer sr = spawnSlot.GetComponent<SpriteRenderer>();
+            spawnPiece.Init(sr);
             _spawnedIndices.Add(index);
         }
     }
