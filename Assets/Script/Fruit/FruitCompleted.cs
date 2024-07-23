@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class FruitCompleted : MonoBehaviour
 {
@@ -16,37 +15,32 @@ public class FruitCompleted : MonoBehaviour
 
     public float delay;
 
+    private static int _totalPlacedFruits = 0;
+
+    public static event Action OnThreeFruitsPlaced;
+
     void Start()
     {
         Spawn();
     }
 
-    void Spawn(List<int> specificIndices = null)
+    void Spawn()
     {
-        if (specificIndices == null || specificIndices.Count == 0)
-        {
-            specificIndices = Enumerable.Range(0, slotPrefabs.Count)
-                .Where(i => !placedIndices.Contains(i))
-                .OrderBy(i => Random.value)
-                .Take(3)
-                .ToList();
-        }
-
+        List<int> specificIndices = PickFruits();
         int countToIterate = Math.Min(Math.Min(slotParent.childCount, pieceParent.childCount), specificIndices.Count);
-        
+
         for (int i = 0; i < countToIterate; i++)
         {
             int index = specificIndices[i];
-
             if (index >= slotPrefabs.Count || index >= slotPiece.Count)
             {
-                Debug.LogError($"Index {index} is out of bounds for _slotPrefabs or _slotPiece.");
+                Debug.LogError($"Index {index} is out of bounds for slotPrefabs or slotPiece.");
                 continue;
             }
 
             var spawnSlot = Instantiate(slotPrefabs[index], slotParent.GetChild(i).position, Quaternion.identity, slotParent.GetChild(i));
             var spawnPiece = Instantiate(slotPiece[index], pieceParent.GetChild(i).position, Quaternion.identity, pieceParent.GetChild(i));
-            
+
             if (index == 3)
             {
                 var spriteRenderer = spawnSlot.GetComponent<SpriteRenderer>();
@@ -55,56 +49,58 @@ public class FruitCompleted : MonoBehaviour
                     spriteRenderer.enabled = true;
                 }
             }
-            
+
             spawnPiece.Init(spawnSlot);
             _spawnedIndices.Add(index);
-            
         }
     }
- 
+
     public void OnFruitPlaced()
     {
-        bool allPlaced = slotPiece.All(selector => selector.placed);
-        if (allPlaced)
+        if (slotPiece.All(selector => selector.placed))
         {
             Debug.Log("All fruits placed!");
-           
         }
     }
 
     public void UpdateGameState()
     {
-        bool allPlaced = slotPiece.All(selector => selector.placed);
-        if (allPlaced)
+        if (slotPiece.All(selector => selector.placed))
         {
             Debug.Log("All fruits placed!");
-
         }
+    }
+
+    List<int> PickFruits()
+    {
+        if (slotPrefabs.Count - _spawnedIndices.Count < 3) _spawnedIndices.Clear();
+
+        return Enumerable.Range(0, slotPrefabs.Count)
+            .Where(i => !_spawnedIndices.Contains(i))
+            .ToList();
     }
 
     public IEnumerator ResetGamePrepareNextStage()
     {
         yield return new WaitForSeconds(delay);
-        List<int> availableIndices = Enumerable.Range(0, slotPrefabs.Count)
-            .Where(i => !_spawnedIndices.Contains(i) && !placedIndices.Contains(i))
-            .ToList();
-        if (availableIndices.Count == 0)
-        {
-            Debug.Log("All fruits have been spawned, preparing next stage...");
-            _spawnedIndices.Clear();
-            placedIndices.Clear(); 
-            availableIndices = Enumerable.Range(0, slotPrefabs.Count).ToList();
-        }
-        var selectedIndices = availableIndices.OrderBy(i => Random.value).Take(3).ToList();
-        Spawn(selectedIndices);
-        
+        Spawn();
+
         foreach (var fruitSelector in slotPiece)
         {
             if (fruitSelector.transform.parent != null)
             {
                 fruitSelector.transform.parent.position = fruitSelector.originalParentPosition;
             }
+            _totalPlacedFruits++;
         }
-        
+    }
+
+    public static void IncrementPlacedFruitsCount()
+    {
+        _totalPlacedFruits++;
+        if (_totalPlacedFruits % 3 == 0)
+        {
+            OnThreeFruitsPlaced?.Invoke();
+        }
     }
 }

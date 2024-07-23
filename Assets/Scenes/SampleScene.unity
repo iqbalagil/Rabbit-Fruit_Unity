@@ -921,7 +921,7 @@ MonoBehaviour:
   playerHappyAnimation: 2017971051
   playerSadAnimation: -1865633360
   playerIdleAnimation: -1815439598
-  playerTuangAnimation: 587424343
+  playerTuangAnimation: 830913243
   playerJumpAnimation: 1749078233
 --- !u!95 &783090017
 Animator:
@@ -1162,19 +1162,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 1174581372}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e475a1cdd82f4575b18c18c388b31d2, type: 3}
+  m_Script: {fileID: 11500000, guid: 36c8436727ce444d5afb7a5bd3c3a4b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   slots:
-  - {fileID: 1957607517}
-  - {fileID: 299067945}
-  - {fileID: 693611441}
-  - {fileID: 287925132}
-  - {fileID: 643332103}
-  - {fileID: 1241397339}
-  - {fileID: 740461699}
-  - {fileID: 1724522912}
-  - {fileID: 453941476}
+  - {fileID: 1957607516}
+  - {fileID: 299067944}
+  - {fileID: 693611440}
+  - {fileID: 287925131}
+  - {fileID: 643332102}
+  - {fileID: 1241397338}
+  - {fileID: 740461698}
+  - {fileID: 1724522911}
+  - {fileID: 453941475}
+  delay: 0
 --- !u!1 &1192371284
 GameObject:
   m_ObjectHideFlags: 0
@@ -1427,7 +1428,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1668444575}
-  - component: {fileID: 1668444576}
+  - component: {fileID: 1668444577}
   m_Layer: 0
   m_Name: FruitParent
   m_TagString: Untagged
@@ -1453,7 +1454,7 @@ Transform:
   - {fileID: 1192371285}
   m_Father: {fileID: 507916084}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1668444576
+--- !u!114 &1668444577
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1462,7 +1463,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1668444574}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e31ac8a018e74370a9bc5ab5e8a4751, type: 3}
+  m_Script: {fileID: 11500000, guid: 055f9b2050b6b403c929af818576656f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   slot1: {fileID: 1281550495}
@@ -1616,7 +1617,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7980044884536622641}
-  - component: {fileID: 8856831555526118670}
   - component: {fileID: 6848380551893385369}
   m_Layer: 0
   m_Name: Basket
@@ -1873,7 +1873,6 @@ GameObject:
   - component: {fileID: 2816910069621555160}
   - component: {fileID: 4086272988928161881}
   - component: {fileID: 8267055851066089227}
-  - component: {fileID: 8267055851066089226}
   m_Layer: 0
   m_Name: rabBasket
   m_TagString: Untagged
@@ -1881,25 +1880,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!255 &8267055851066089226
-FixedJoint2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8267055851066089225}
-  m_Enabled: 1
-  serializedVersion: 4
-  m_EnableCollision: 0
-  m_ConnectedRigidBody: {fileID: 783090018}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_BreakAction: 3
-  m_AutoConfigureConnectedAnchor: 1
-  m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 0.09800049, y: -0.18799987}
-  m_DampingRatio: 0
-  m_Frequency: 0
 --- !u!50 &8267055851066089227
 Rigidbody2D:
   serializedVersion: 4
@@ -1946,19 +1926,6 @@ RectTransform:
   m_AnchoredPosition: {x: -0.96999997, y: -1.079}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &8856831555526118670
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 249193016408729471}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b3a0f64f096084d82bda6da63a6ec7bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  basket: {fileID: 249193016408729471}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

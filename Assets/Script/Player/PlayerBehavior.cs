@@ -24,6 +24,7 @@ public class PlayerBehavior : MonoBehaviour
     {
         anime.SetBool(playerIdleAnimation, false);
         StartCoroutine(InitializeSelector());
+        StartCoroutine(PlayerTuangFruit());
     }
     
     private IEnumerator InitializeSelector()
@@ -34,22 +35,14 @@ public class PlayerBehavior : MonoBehaviour
 
     public IEnumerator PlayerTuangFruit()
     {
-        yield return new WaitForSeconds(1f);
-        if ( _selector == null)
-        {
-            Debug.LogError("is null");
-        }
-        if (!_selector.isTuang)
-        {
-            anime.SetBool(playerTuangAnimation, false);
-        }
-        
+        yield return new WaitForSeconds(6f);
+        anime.SetBool(playerTuangAnimation, false);
     }
-
+    
     public IEnumerator PlayerJumping()
     {
         yield return new WaitForSeconds(1f);
-        if (!_selector.isJumping)
+        if (!_selector)
         {
             anime.SetBool(playerJumpAnimation, false);
         }

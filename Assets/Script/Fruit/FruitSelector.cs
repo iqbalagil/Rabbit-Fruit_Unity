@@ -1,35 +1,33 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class FruitSelector : MonoBehaviour
 {
-    [SerializeField] public new SpriteRenderer renderer;
+    [SerializeField] private SpriteRenderer renderer;
     private ChangePosition _changePosition;
-    public bool dragging,placed,animateTriggered,isHappy, isSad, isTuang, isJumping;
-    private Vector2 _offset, _originalPosition;
-    private Vector3 _originalParentPosition;
     private FruitHandler _slot;
     private PlayerBehavior _player;
-    public Animator anim;
-
     private FruitCompleted _fruitCompleted;
+
+    public bool dragging, placed, animateTriggered, isHappy, isSad, isTuang, isCartPlaced, isElevate;
+    private Vector2 _offset, _originalPosition;
+    private Vector3 _originalParentPosition;
+    public Animator anim;
     private static int _nextSlotIndex = 0;
+    private static int _placedFruitsCount = 0;
     public Transform fruit;
 
-    private static readonly int IsPlaced = Animator.StringToHash("Placed");
-    private float _originalScale;
     public Vector3 originalParentPosition;
-
-    private static int _placedFruitsCount = 0;
-    [SerializeField] private PlayerBehavior playerBehavior;
-
-
+    
+    private static readonly int IsPlaced = Animator.StringToHash("Placed");
+    private static readonly int IsPlacedCart = Animator.StringToHash("PlacedCart");
 
     public void Init(FruitHandler slot)
     {
         _slot = slot;
     }
-
+    
     private void Awake()
     {
         _originalPosition = transform.position;
@@ -41,49 +39,24 @@ public class FruitSelector : MonoBehaviour
         _originalParentPosition = transform.parent.position;
     }
 
-    private void Start()
-    {
-        _placedFruitsCount++;
-        _fruitCompleted = FindObjectOfType<FruitCompleted>();
-    }
     private void Update()
     {
         if (placed) return;
 
         anim.enabled = false;
-        
         if (!dragging) return;
-        
-        var mousePosition = GetMousePos();
-        transform.position = mousePosition - _offset;
 
-        if (isSad == true)
-        {
-            _player.anime.SetBool(_player.playerSadAnimation, true);
-        } else if (!isSad && dragging)
-        {   
-            _player.anime.SetBool(_player.playerSadAnimation,false);
-        }
+        transform.position = GetMousePos() - _offset;
+        TriggredListFruitObject();
 
-        if (isHappy == true)
-        {
-            _player.anime.SetBool(_player.playerHappyAnimation, true);
-        }
-        else 
-        {
-            _player.anime.SetBool(_player.playerHappyAnimation, false);
-        }
+        _player.anime.SetBool(_player.playerTuangAnimation, isTuang);
+        _player.anime.SetBool(_player.playerSadAnimation, isSad && dragging);
+        _player.anime.SetBool(_player.playerHappyAnimation, isHappy);
 
-        if (isTuang)
-        {
-            _player.anime.SetBool(_player.playerTuangAnimation, true);
-        }
-        
-        if (animateTriggered == true)
+        if (animateTriggered)
         {
             transform.localScale = new Vector3(10f, 10f, 0f);
         }
-
     }
 
     private void OnMouseDown()
@@ -93,7 +66,7 @@ public class FruitSelector : MonoBehaviour
         dragging = true;
         _offset = GetMousePos() - (Vector2)transform.position;
         _player.anime.SetTrigger(_player.playerIdleAnimation);
-
+        isSad = false;
     }
 
     private void OnMouseUp()
@@ -118,12 +91,16 @@ public class FruitSelector : MonoBehaviour
 
             if (_placedFruitsCount % 3 == 0)
             {
-                // StartCoroutine(_player.PlayerTuangFruit());
-                StartCoroutine(_fruitCompleted.ResetGamePrepareNextStage());
+                isCartPlaced = true;
+                isElevate = false;
                 StartCoroutine(_changePosition.BackToPositionBefore());
+                StartCoroutine(FruitTuang());
+                StartCoroutine(TuangAnimation());
+                StartCoroutine(_player.PlayerTuangFruit());
+                StartCoroutine(_fruitCompleted.ResetGamePrepareNextStage());
             }
 
-            FindObjectOfType<FruitCompleted>().OnFruitPlaced();
+            _fruitCompleted.OnFruitPlaced();
         }
         else
         {
@@ -135,7 +112,7 @@ public class FruitSelector : MonoBehaviour
             }
         }
 
-        UpdateAnimationStates(); 
+        UpdateAnimationStates();
     }
 
     private void UpdateAnimationStates()
@@ -151,9 +128,6 @@ public class FruitSelector : MonoBehaviour
         if (renderer != null)
         {
             renderer.enabled = true;
-        } else
-        {
-            Debug.Log("Sprite is DissapearAfterSnap");
         }
 
         if (_slot != null)
@@ -164,32 +138,27 @@ public class FruitSelector : MonoBehaviour
             }
             _slot.gameObject.SetActive(false);
         }
-        if (_player != null)
+
+        if (_player != null && gameObject.CompareTag("fruit"))
         {
-            if (gameObject.CompareTag("fruit"))
+            anim.enabled = true;
+            renderer.enabled = true;
+            if (placed)
             {
-                anim.enabled = true;
-                Debug.Log("fruit fly");
-                renderer.enabled = true;
-                if (placed)
-                {
-                    OnElevation();
-                }
+                OnElevation();
             }
         }
-
     }
 
-    Vector2 GetMousePos()
+    private Vector2 GetMousePos()
     {
         return Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
-    
-    
+
     private void OnElevation()
     {
         anim.transform.position = new Vector3(transform.position.x / 9f, transform.position.y / 9f, 0f);
-        anim.SetBool(IsPlaced,true);
+        anim.SetBool(IsPlaced, true);
         StartCoroutine(ChangeScaleAfterAnimation(0));
     }
 
@@ -205,7 +174,7 @@ public class FruitSelector : MonoBehaviour
         if (fruit.transform.childCount > slotIndex)
         {
             GameObject locGameObject = GameObject.Find($"Player/Basket/rabBasket/Loc {slotIndex + 1}");
-        
+
             if (locGameObject != null)
             {
                 transform.position = locGameObject.transform.position;
@@ -224,24 +193,19 @@ public class FruitSelector : MonoBehaviour
         if (other.CompareTag("basket"))
         {
             _player.anime.SetBool(_player.playerHappyAnimation, false);
-            Debug.Log($"Fruit is placed in slot {_nextSlotIndex + 1}");
             animateTriggered = true;
-            
             anim.enabled = false;
 
             _nextSlotIndex = (_nextSlotIndex + 1) % 3;
             StartCoroutine(PlacedAfterAnimation(0, _nextSlotIndex));
 
-            string locPath = $"Player/Basket/rabBasket/Loc {_nextSlotIndex + 1 }";
-            Debug.Log($"Attempting to place fruit in: {locPath}");
-
+            string locPath = $"Player/Basket/rabBasket/Loc {_nextSlotIndex + 1}";
             Transform playerBasketLoc = GameObject.Find(locPath)?.transform;
 
             if (playerBasketLoc != null)
             {
                 transform.SetParent(playerBasketLoc);
                 transform.localPosition = Vector3.zero;
-                Debug.Log($"Successfully found and placed in: {locPath}");
             }
             else
             {
@@ -250,4 +214,23 @@ public class FruitSelector : MonoBehaviour
         }
     }
 
+    private IEnumerator TuangAnimation()
+    {
+        yield return new WaitForSeconds(4f);
+        _player.anime.SetBool(_player.playerTuangAnimation, true);
+    }
+
+    private IEnumerator FruitTuang()
+    {
+        yield return new WaitForSeconds(4f);
+        // anim.enabled = true;
+        // anim.SetTrigger(IsPlacedCart);
+        transform.parent.position += new Vector3(5f, 0, 0);
+    }
+
+    private void TriggredListFruitObject()
+    {
+        anim.SetBool(IsPlaced, isElevate);
+        anim.SetBool(IsPlacedCart, isCartPlaced);
+    }
 }
