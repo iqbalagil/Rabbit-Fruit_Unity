@@ -9,6 +9,7 @@ TagManager:
   - AnimateFruit
   - basket
   - cart
+  - particleconfetti
   layers:
   - Default
   - TransparentFX

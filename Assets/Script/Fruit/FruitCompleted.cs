@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = System.Random;
 
 public class FruitCompleted : MonoBehaviour
 {
@@ -11,13 +12,8 @@ public class FruitCompleted : MonoBehaviour
     [SerializeField] private Transform slotParent, pieceParent;
 
     private readonly HashSet<int> _spawnedIndices = new HashSet<int>();
-    private HashSet<int> placedIndices = new HashSet<int>();
-
+    private int _spawnCount = 0;
     public float delay;
-
-    private static int _totalPlacedFruits = 0;
-
-    public static event Action OnThreeFruitsPlaced;
 
     void Start()
     {
@@ -26,8 +22,15 @@ public class FruitCompleted : MonoBehaviour
 
     void Spawn()
     {
+        _spawnCount++;
+        if (_spawnCount >= 4)
+        {
+            Debug.Log("Spawn limit reached.");
+            return;
+        }
+
         List<int> specificIndices = PickFruits();
-        int countToIterate = Math.Min(Math.Min(slotParent.childCount, pieceParent.childCount), specificIndices.Count);
+        int countToIterate = Math.Min(slotParent.childCount, Math.Min(pieceParent.childCount, specificIndices.Count));
 
         for (int i = 0; i < countToIterate; i++)
         {
@@ -54,17 +57,10 @@ public class FruitCompleted : MonoBehaviour
             spawnPiece.Init(sr);
             _spawnedIndices.Add(index);
         }
+        
     }
 
     public void OnFruitPlaced()
-    {
-        if (slotPiece.All(selector => selector.placed))
-        {
-            Debug.Log("All fruits placed!");
-        }
-    }
-
-    public void UpdateGameState()
     {
         if (slotPiece.All(selector => selector.placed))
         {
@@ -78,6 +74,8 @@ public class FruitCompleted : MonoBehaviour
 
         return Enumerable.Range(0, slotPrefabs.Count)
             .Where(i => !_spawnedIndices.Contains(i))
+            .OrderBy(i => UnityEngine.Random.value)
+            .Take(3)
             .ToList();
     }
 
@@ -92,16 +90,6 @@ public class FruitCompleted : MonoBehaviour
             {
                 fruitSelector.transform.parent.position = fruitSelector.originalParentPosition;
             }
-            _totalPlacedFruits++;
-        }
-    }
-
-    public static void IncrementPlacedFruitsCount()
-    {
-        _totalPlacedFruits++;
-        if (_totalPlacedFruits % 3 == 0)
-        {
-            OnThreeFruitsPlaced?.Invoke();
         }
     }
 }
